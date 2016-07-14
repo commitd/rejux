@@ -22,7 +22,6 @@ public class SimpleStateHolder<S> implements SettableStateHolder<S> {
 	public synchronized void setState(S newState) {
 		if (newState != null && !newState.equals(state)) {
 			state = newState;
-
 			fireStateChanged();
 		}
 	}
