@@ -7,13 +7,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import sofware.committed.rejux.Action;
-import sofware.committed.rejux.Dispatcher;
-import sofware.committed.rejux.Rejux;
-import sofware.committed.rejux.Subscriber;
-import sofware.committed.rejux.Subscription;
-import sofware.committed.rejux.impl.AbstractReducer;
-import sofware.committed.rejux.impl.Store;
+import software.committed.rejux.impl.AbstractReducer;
+import software.committed.rejux.impl.Store;
 
 public class RejuxFullApiTest {
 
@@ -29,11 +24,11 @@ public class RejuxFullApiTest {
 			return sum.subscribe(subscriber);
 		}
 
-		public SumState getState() {
-			return sum.getState();
+		public Store<SumState> getSum() {
+			return sum;
 		}
 
-		public int getSum() {
+		public int getSumValue() {
 			return sum.getState().getValue();
 		}
 	}
@@ -94,7 +89,7 @@ public class RejuxFullApiTest {
 	public void canCreateStore() {
 		ArthimeticStore store = new ArthimeticStore();
 		assertNotNull(store);
-		assertEquals(0, store.getSum());
+		assertEquals(0, store.getSumValue());
 	}
 
 	@Test
@@ -106,16 +101,16 @@ public class RejuxFullApiTest {
 	public void canDispatchAction() {
 		ArthimeticStore store = new ArthimeticStore();
 		Dispatcher dispatcher = Rejux.createSuperStore(store);
-		assertEquals(0, store.getSum());
+		assertEquals(0, store.getSumValue());
 		dispatcher.dispatch(new AddAction(10));
-		assertEquals(10, store.getSum());
+		assertEquals(10, store.getSumValue());
 	}
 
 	@Test
 	public void canSubscribe() {
 		ArthimeticStore store = new ArthimeticStore();
 		Dispatcher dispatcher = Rejux.createSuperStore(store);
-		assertEquals(0, store.getSum());
+		assertEquals(0, store.getSumValue());
 
 		CountSubscriber subscriber = new CountSubscriber();
 
@@ -124,7 +119,7 @@ public class RejuxFullApiTest {
 
 		dispatcher.dispatch(new AddAction(10));
 
-		assertEquals(10, store.getSum());
+		assertEquals(10, store.getSumValue());
 
 		assertEquals(1, subscriber.getCount());
 
