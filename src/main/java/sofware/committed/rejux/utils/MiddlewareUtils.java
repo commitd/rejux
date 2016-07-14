@@ -20,14 +20,13 @@ public final class MiddlewareUtils {
 		Dispatcher dispatcher = lastDispatcher;
 
 		if (middlewares != null) {
-			for (int i = middlewares.size() - 1; i >= 0; i--) {
-				Middleware<? super G> m = middlewares.get(i);
+			for (Middleware<? super G> middleware : middlewares) {
 				final Dispatcher previous = dispatcher;
 				dispatcher = new Dispatcher() {
 
 					@Override
 					public void dispatch(Action action) {
-						m.apply(this, store, action, previous);
+						middleware.apply(this, store, action, previous);
 					}
 				};
 			}
@@ -36,16 +35,15 @@ public final class MiddlewareUtils {
 		return dispatcher;
 	}
 
-	public static <S> SubDispatcher createChain(StateHolder<S> holder, StatefulMiddleware<S>[] middlewares,
+	public static <S> SubDispatcher createChain(StateHolder<S> holder, List<StatefulMiddleware<S>> middlewares,
 			Dispatcher lastDispatcher) {
 		SubDispatcher dispatcher = (d, a) -> lastDispatcher.dispatch(a);
 
 		if (middlewares != null) {
-			for (int i = middlewares.length - 1; i >= 0; i--) {
-				StatefulMiddleware<S> m = middlewares[i];
+			for (StatefulMiddleware<S> middleware : middlewares) {
 				final SubDispatcher previous = dispatcher;
-
-				dispatcher = (d, a) -> m.apply(d, holder.getState(), a, x -> previous.dispatch(d, x));
+				dispatcher = (d, a) -> middleware.apply(d, holder.getState(), a, x -> previous.dispatch(d, x));
+				dispatcher = (d, a) -> middleware.apply(d, holder.getState(), a, x -> previous.dispatch(d, x));
 			}
 		}
 

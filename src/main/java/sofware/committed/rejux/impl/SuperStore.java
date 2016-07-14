@@ -1,6 +1,5 @@
 package sofware.committed.rejux.impl;
 
-import java.util.Arrays;
 import java.util.List;
 
 import sofware.committed.rejux.Action;
@@ -15,12 +14,12 @@ public class SuperStore<G> implements Dispatcher {
 	private final G stores;
 	private final Dispatcher chain;
 
-	public SuperStore(G stores, Middleware<? super G>[] middlewares) {
+	public SuperStore(G stores, List<Middleware<? super G>> middlewares) {
 		this.stores = stores;
 
 		// Get the return type
 		subStores = ReflectionUtils.getAllReturnedOfType(stores, Store.class);
-		this.chain = MiddlewareUtils.createChain(stores, Arrays.asList(middlewares), this::dispatchToSubStores);
+		this.chain = MiddlewareUtils.createChain(stores, middlewares, this::dispatchToSubStores);
 	}
 
 	private void dispatchToSubStores(Action action) {
