@@ -10,7 +10,7 @@ import sofware.committed.rejux.Subscriber;
 import sofware.committed.rejux.Subscription;
 import sofware.committed.rejux.utils.MiddlewareUtils;
 
-public class Store<S> implements SubDispatcher, StateHolder<S> {
+public class Store<S> implements StateHolder<S> {
 
 	private final SimpleStateHolder<S> holder;
 	private final Reducer<S> reducer;
@@ -23,9 +23,8 @@ public class Store<S> implements SubDispatcher, StateHolder<S> {
 		this.chain = MiddlewareUtils.createChain(holder, middlewares, this::reduce);
 	}
 
-	@Override
-	// TODO: Ideally this would not be public, since I don't want outside the store calling it
-	public void dispatch(Dispatcher dispatcher, Action action) {
+	// NOTE: This is deliberately package level as it is accessed only StoreDispatcher
+	void dispatch(Dispatcher dispatcher, Action action) {
 		this.chain.dispatch(dispatcher, action);
 	}
 
