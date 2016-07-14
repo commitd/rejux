@@ -16,8 +16,8 @@ public class ArthimeticExample {
 		private final Store<CountState> count;
 
 		public ArthimeticStore() {
-			sum = Rejux.create(new SumState(0), new SumReducer());
-			count = Rejux.create(new CountState(0), new CountReducer());
+			sum = Rejux.createStore(new SumState(0), new SumReducer());
+			count = Rejux.createStore(new CountState(0), new CountReducer());
 		}
 
 		public Store<SumState> getSum() {
@@ -93,7 +93,7 @@ public class ArthimeticExample {
 
 	public static void main(String[] args) {
 		ArthimeticStore store = new ArthimeticStore();
-		Dispatcher dispatcher = Rejux.create(store);
+		Dispatcher dispatcher = Rejux.createSuperStore(store);
 
 		System.out.println(store.getSum().getState().getValue());
 		System.out.println(store.getCount().getState().getValue());

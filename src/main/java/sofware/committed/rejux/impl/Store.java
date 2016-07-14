@@ -16,7 +16,7 @@ public class Store<S> implements StateHolder<S> {
 	private final Reducer<S> reducer;
 	private final SubDispatcher chain;
 
-	public Store(S initialState, Reducer<S> reducer, StatefulMiddleware<S>... middlewares) {
+	public Store(S initialState, Reducer<S> reducer, StatefulMiddleware<S>[] middlewares) {
 		this.reducer = reducer;
 		holder = new SimpleStateHolder<>(initialState);
 

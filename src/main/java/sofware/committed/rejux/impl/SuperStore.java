@@ -8,21 +8,21 @@ import sofware.committed.rejux.Middleware;
 import sofware.committed.rejux.utils.MiddlewareUtils;
 import sofware.committed.rejux.utils.ReflectionUtils;
 
-public class StoreDispatcher<G> implements Dispatcher {
+public class SuperStore<G> implements Dispatcher {
 
 	private final List<Store> subStores;
-	private final G store;
+	private final G stores;
 	private final Dispatcher chain;
 
-	public StoreDispatcher(G store, Middleware<? super G>[] middlewares) {
-		this.store = store;
+	public SuperStore(G stores, Middleware<? super G>[] middlewares) {
+		this.stores = stores;
 
 		// Get the return type
-		subStores = ReflectionUtils.getAllReturnedOfType(store, Store.class);
-		this.chain = MiddlewareUtils.createChain(store, middlewares, this::dispatchToSubDispatchers);
+		subStores = ReflectionUtils.getAllReturnedOfType(stores, Store.class);
+		this.chain = MiddlewareUtils.createChain(stores, middlewares, this::dispatchToSubStores);
 	}
 
-	private void dispatchToSubDispatchers(Action action) {
+	private void dispatchToSubStores(Action action) {
 		for (Store<?> subStore : subStores) {
 			subStore.dispatch(this, action);
 		}
@@ -33,8 +33,11 @@ public class StoreDispatcher<G> implements Dispatcher {
 		this.chain.dispatch(action);
 	}
 
-	public G getStore() {
-		return store;
+	public G getStores() {
+		return stores;
 	}
 
+	public G stores() {
+		return stores;
+	}
 }
