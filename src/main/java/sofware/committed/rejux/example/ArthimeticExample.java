@@ -16,8 +16,8 @@ public class ArthimeticExample {
 		private final Store<CountState> count;
 
 		public ArthimeticStore() {
-			sum = new Store<>(new SumState(0), new SumReducer());
-			count = new Store<>(new CountState(0), new CountReducer());
+			sum = Rejux.create(new SumState(0), new SumReducer());
+			count = Rejux.create(new CountState(0), new CountReducer());
 		}
 
 		public Store<SumState> getSum() {
