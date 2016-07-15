@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import software.committed.rejux.interfaces.SettableStateHolder;
+import software.committed.rejux.interfaces.SettableState;
 import software.committed.rejux.interfaces.Subscriber;
 import software.committed.rejux.interfaces.Subscription;
 
-public class SimpleStateHolder<S> implements SettableStateHolder<S> {
+public class SimpleStateHolder<S> implements SettableState<S> {
 
 	private final Set<Subscriber<S>> subscribers = Collections.synchronizedSet(new HashSet<>());
 

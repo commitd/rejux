@@ -1,6 +1,6 @@
 package software.committed.rejux.interfaces;
 
-public interface StateHolder<S> {
+public interface State<S> {
 
 	S getState();
 

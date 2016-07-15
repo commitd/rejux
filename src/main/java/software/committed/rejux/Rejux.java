@@ -7,7 +7,6 @@ import software.committed.rejux.impl.SimpleStore;
 import software.committed.rejux.impl.SuperStore;
 import software.committed.rejux.interfaces.Middleware;
 import software.committed.rejux.interfaces.Reducer;
-import software.committed.rejux.interfaces.StatefulMiddleware;
 
 public final class Rejux {
 
@@ -27,7 +26,7 @@ public final class Rejux {
 		return new SimpleStore<>(initialState, reducer, Collections.emptyList());
 	}
 
-	public static <S> SimpleStore<S> createStore(S initialState, Reducer<S> reducer, StatefulMiddleware<S>... middlewares) {
+	public static <S> SimpleStore<S> createStore(S initialState, Reducer<S> reducer, Middleware<S>... middlewares) {
 		return new SimpleStore<>(initialState, reducer, Arrays.asList(middlewares));
 	}
 }

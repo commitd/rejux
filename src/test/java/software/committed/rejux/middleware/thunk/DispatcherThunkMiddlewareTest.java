@@ -6,14 +6,12 @@ import org.mockito.Mockito;
 
 import software.committed.rejux.interfaces.Action;
 import software.committed.rejux.interfaces.Dispatcher;
-import software.committed.rejux.middleware.thunk.DispatcherThunkAction;
-import software.committed.rejux.middleware.thunk.DispatcherThunkMiddleware;
 
 public class DispatcherThunkMiddlewareTest {
 
 	@Test
 	public void testNonThunk() {
-		DispatcherThunkMiddleware<Object> m = new DispatcherThunkMiddleware<>();
+		ThunkMiddleware<Object> m = new ThunkMiddleware<>();
 
 		Dispatcher first = Mockito.mock(Dispatcher.class);
 		Dispatcher next = Mockito.mock(Dispatcher.class);
@@ -29,11 +27,11 @@ public class DispatcherThunkMiddlewareTest {
 
 	@Test
 	public void testThunk() {
-		DispatcherThunkMiddleware<Object> m = new DispatcherThunkMiddleware<>();
+		ThunkMiddleware<Object> m = new ThunkMiddleware<>();
 
 		Dispatcher first = Mockito.mock(Dispatcher.class);
 		Dispatcher next = Mockito.mock(Dispatcher.class);
-		DispatcherThunkAction<Object> action = Mockito.mock(DispatcherThunkAction.class);
+		ThunkAction<Object> action = Mockito.mock(ThunkAction.class);
 		Object state = new Object();
 
 		m.apply(first, state, action, next);

@@ -5,8 +5,7 @@ import java.util.List;
 import software.committed.rejux.interfaces.Action;
 import software.committed.rejux.interfaces.Dispatcher;
 import software.committed.rejux.interfaces.Middleware;
-import software.committed.rejux.interfaces.StateHolder;
-import software.committed.rejux.interfaces.StatefulMiddleware;
+import software.committed.rejux.interfaces.State;
 import software.committed.rejux.interfaces.SubDispatcher;
 
 public final class MiddlewareUtils {
@@ -35,12 +34,12 @@ public final class MiddlewareUtils {
 		return dispatcher;
 	}
 
-	public static <S> SubDispatcher createChain(StateHolder<S> holder, List<StatefulMiddleware<S>> middlewares,
+	public static <S> SubDispatcher createChain(State<S> holder, List<Middleware<S>> middlewares,
 			Dispatcher lastDispatcher) {
 		SubDispatcher dispatcher = (d, a) -> lastDispatcher.dispatch(a);
 
 		if (middlewares != null) {
-			for (StatefulMiddleware<S> middleware : middlewares) {
+			for (Middleware<S> middleware : middlewares) {
 				final SubDispatcher previous = dispatcher;
 				dispatcher = (d, a) -> middleware.apply(d, holder.getState(), a, x -> previous.dispatch(d, x));
 				dispatcher = (d, a) -> middleware.apply(d, holder.getState(), a, x -> previous.dispatch(d, x));

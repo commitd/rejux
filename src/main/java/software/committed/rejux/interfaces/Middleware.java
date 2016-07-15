@@ -1,8 +1,8 @@
 package software.committed.rejux.interfaces;
 
 @FunctionalInterface
-public interface Middleware<G> {
+public interface Middleware<S> {
 
-	void apply(Dispatcher first, G store, Action action, Dispatcher next);
+	void apply(Dispatcher front, S storeOrState, Action action, Dispatcher next);
 
 }
