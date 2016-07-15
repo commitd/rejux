@@ -1,6 +1,7 @@
 package software.committed.rejux;
 
 import java.lang.reflect.Proxy;
+import java.util.Arrays;
 
 import software.committed.rejux.impl.CombinedReducer;
 import software.committed.rejux.impl.CombinedState;
@@ -24,12 +25,12 @@ public final class Rejux {
 		StateProxyHandler<S> handler = new StateProxyHandler<>(combinedState);
 		S state = (S) Proxy.newProxyInstance(Rejux.class.getClassLoader(), new Class[] { clazz }, handler);
 
-		return new SimpleStore<>(clazz, state, combinedReducer, middleware);
+		return new SimpleStore<>(clazz, state, combinedReducer, Arrays.asList(middleware));
 	}
 
 	public static <S> SubscribableState<S> createState(Class<S> clazz, S initialState,
 			Middleware<? super S>... middleware) {
-		return new SimpleState<>(clazz, initialState);
+		return new SimpleState<>(clazz, initialState, Arrays.asList(middleware));
 	}
 
 }

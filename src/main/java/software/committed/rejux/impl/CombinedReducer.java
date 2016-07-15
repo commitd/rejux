@@ -9,6 +9,7 @@ import com.github.andrewoma.dexx.collection.Pair;
 import software.committed.rejux.annotations.Reduce;
 import software.committed.rejux.interfaces.Dispatcher;
 import software.committed.rejux.interfaces.Reducer;
+import software.committed.rejux.interfaces.State;
 import software.committed.rejux.utils.AnnotationUtils;
 
 public class CombinedReducer<S> {
@@ -35,10 +36,22 @@ public class CombinedReducer<S> {
 					if (stateClass != null && reduce != null && reduce.value() != null) {
 
 						try {
-
 							Reducer<?> reducer = reduce.value().newInstance();
-
 							Class<?> reducerStateClazz = reducer.getType();
+
+							if (State.class.isAssignableFrom(stateClass)) {
+								// If we have are State<> wrapped then we need to unpack and repack
+								// in the reducer
+
+								State state = (State) combinedState.getStateByName(methodName);
+								if (state == null) {
+									throw new RuntimeException("Initial state for State<> types  may not be null");
+								}
+
+								stateClass = state.getType();
+
+								reducer = new StateWrappedReducer(stateClass, reducer);
+							}
 
 							if (reducerStateClazz.isAssignableFrom(stateClass)) {
 								// Passed our check, so we move create a reducer
@@ -50,6 +63,7 @@ public class CombinedReducer<S> {
 												+ "' not match the initial state type '"
 												+ stateClass + "', ignoring...");
 							}
+
 						} catch (Exception e) {
 							System.err.println("Reducer for " + methodName + "appears invalid, ignoring...");
 							// TODO Auto-generated catch block
@@ -78,8 +92,6 @@ public class CombinedReducer<S> {
 			Reducer reducer = e.component2();
 			Object oldState = combinedState.getStateByName(name);
 
-			// TODO: Store middleware
-
 			// Note we check when we create the reducer map that the newState, oldState, etc are
 			// "correctly" typed.
 			Object newState = reducer.reduce(oldState, action);
@@ -94,7 +106,8 @@ public class CombinedReducer<S> {
 	}
 
 	public static boolean isReduceMethod(Method method) {
-		return method.getParameterCount() == 0 && AnnotationUtils.isAnnotationPresentInHierarchy(method, Reduce.class)
+		return method.getParameterCount() == 0
+				&& AnnotationUtils.isAnnotationPresentInHierarchy(method, Reduce.class)
 				&& !method.isDefault()
 				&& !method.getReturnType().equals(Void.class);
 	}

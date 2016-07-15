@@ -4,8 +4,7 @@ import java.util.List;
 
 import software.committed.rejux.interfaces.Dispatcher;
 import software.committed.rejux.interfaces.Middleware;
-import software.committed.rejux.interfaces.SubscribableState;
-import software.committed.rejux.interfaces.ExplicitDispatcher;
+import software.committed.rejux.interfaces.State;
 
 public final class MiddlewareUtils {
 
@@ -13,35 +12,32 @@ public final class MiddlewareUtils {
 		// Singleton
 	}
 
-	public static <G> Dispatcher createChain(G store, List<Middleware<? super G>> middlewares,
+	public static <S> Dispatcher createChain(Dispatcher firstDispatcher, S store,
+			List<Middleware<? super S>> middlewares,
 			Dispatcher lastDispatcher) {
 		Dispatcher dispatcher = lastDispatcher;
 
-		if (middlewares != null) {
-			for (Middleware<? super G> middleware : middlewares) {
+		if (middlewares != null && !middlewares.isEmpty()) {
+			for (int i = middlewares.size() - 1; i >= 0; i--) {
+				Middleware<? super S> m = middlewares.get(i);
 				final Dispatcher previous = dispatcher;
-				dispatcher = new Dispatcher() {
-
-					@Override
-					public void dispatch(Object action) {
-						middleware.apply(this, store, action, previous);
-					}
-				};
+				dispatcher = (a) -> m.apply(firstDispatcher, store, a, previous);
 			}
 		}
 
 		return dispatcher;
 	}
 
-	public static <S> ExplicitDispatcher createChain(SubscribableState<S> holder, List<Middleware<S>> middlewares,
+	public static <S> Dispatcher createChain(Dispatcher firstDispatcher, State<S> holder,
+			List<Middleware<? super S>> middlewares,
 			Dispatcher lastDispatcher) {
-		ExplicitDispatcher dispatcher = (d, a) -> lastDispatcher.dispatch(a);
+		Dispatcher dispatcher = lastDispatcher;
 
-		if (middlewares != null) {
-			for (Middleware<S> middleware : middlewares) {
-				final ExplicitDispatcher previous = dispatcher;
-				dispatcher = (d, a) -> middleware.apply(d, holder.get(), a, x -> previous.dispatch(d, x));
-				dispatcher = (d, a) -> middleware.apply(d, holder.get(), a, x -> previous.dispatch(d, x));
+		if (middlewares != null && !middlewares.isEmpty()) {
+			for (int i = middlewares.size() - 1; i >= 0; i--) {
+				Middleware<? super S> m = middlewares.get(i);
+				final Dispatcher previous = dispatcher;
+				dispatcher = (a) -> m.apply(firstDispatcher, holder.get(), a, previous);
 			}
 		}
 
