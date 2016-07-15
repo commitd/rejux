@@ -1,5 +1,5 @@
 package software.committed.rejux.interfaces;
 
-public interface Store<G> extends Dispatcher {
+public interface Store<S> extends SubscribableState<S>, Dispatcher {
 
 }

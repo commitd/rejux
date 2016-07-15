@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import software.committed.rejux.impl.AbstractReducer;
+import software.committed.rejux.impl.ReflectingReducer;
 import software.committed.rejux.impl.SimpleStore;
 import software.committed.rejux.interfaces.Action;
 import software.committed.rejux.interfaces.Dispatcher;
@@ -49,7 +49,7 @@ public class RejuxFullApiTest {
 		}
 	}
 
-	public static class SumReducer extends AbstractReducer<SumState> {
+	public static class SumReducer extends ReflectingReducer<SumState> {
 
 		public SumReducer() {
 			super(SumState.class);

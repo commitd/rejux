@@ -2,11 +2,10 @@ package software.committed.rejux.utils;
 
 import java.util.List;
 
-import software.committed.rejux.interfaces.Action;
 import software.committed.rejux.interfaces.Dispatcher;
 import software.committed.rejux.interfaces.Middleware;
-import software.committed.rejux.interfaces.State;
-import software.committed.rejux.interfaces.SubDispatcher;
+import software.committed.rejux.interfaces.SubscribableState;
+import software.committed.rejux.interfaces.ExplicitDispatcher;
 
 public final class MiddlewareUtils {
 
@@ -24,7 +23,7 @@ public final class MiddlewareUtils {
 				dispatcher = new Dispatcher() {
 
 					@Override
-					public void dispatch(Action action) {
+					public void dispatch(Object action) {
 						middleware.apply(this, store, action, previous);
 					}
 				};
@@ -34,15 +33,15 @@ public final class MiddlewareUtils {
 		return dispatcher;
 	}
 
-	public static <S> SubDispatcher createChain(State<S> holder, List<Middleware<S>> middlewares,
+	public static <S> ExplicitDispatcher createChain(SubscribableState<S> holder, List<Middleware<S>> middlewares,
 			Dispatcher lastDispatcher) {
-		SubDispatcher dispatcher = (d, a) -> lastDispatcher.dispatch(a);
+		ExplicitDispatcher dispatcher = (d, a) -> lastDispatcher.dispatch(a);
 
 		if (middlewares != null) {
 			for (Middleware<S> middleware : middlewares) {
-				final SubDispatcher previous = dispatcher;
-				dispatcher = (d, a) -> middleware.apply(d, holder.getState(), a, x -> previous.dispatch(d, x));
-				dispatcher = (d, a) -> middleware.apply(d, holder.getState(), a, x -> previous.dispatch(d, x));
+				final ExplicitDispatcher previous = dispatcher;
+				dispatcher = (d, a) -> middleware.apply(d, holder.get(), a, x -> previous.dispatch(d, x));
+				dispatcher = (d, a) -> middleware.apply(d, holder.get(), a, x -> previous.dispatch(d, x));
 			}
 		}
 

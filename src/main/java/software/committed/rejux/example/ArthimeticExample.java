@@ -1,38 +1,24 @@
 package software.committed.rejux.example;
 
-import software.committed.rejux.Action;
-import software.committed.rejux.Dispatcher;
 import software.committed.rejux.Rejux;
-import software.committed.rejux.Subscription;
-import software.committed.rejux.impl.AbstractReducer;
-import software.committed.rejux.impl.Store;
+import software.committed.rejux.annotations.ActionReducer;
+import software.committed.rejux.annotations.Reduce;
+import software.committed.rejux.impl.ReflectingReducer;
+import software.committed.rejux.interfaces.Store;
 
 public class ArthimeticExample {
 
-	public static class ArthimeticStore {
-
-		private final Store<SumState> sum;
-
-		private final Store<CountState> count;
-
-		public ArthimeticStore() {
-			sum = Rejux.createStore(new SumState(0), new SumReducer());
-			count = Rejux.createStore(new CountState(0), new CountReducer());
-		}
-
-		public Store<SumState> getSum() {
-			return sum;
-		}
-
-		public Store<CountState> getCount() {
-			return count;
-		}
+	public interface ArthimeticState {
+		@Reduce(SumReducer.class)
+		Sum getSum();
 	}
 
-	public static class SumState {
+	// NOTE: This normally be an immutable (dexx or immutables)
+	public static class Sum {
+
 		private final int sum;
 
-		public SumState(int sum) {
+		public Sum(int sum) {
 			this.sum = sum;
 		}
 
@@ -41,43 +27,20 @@ public class ArthimeticExample {
 		}
 	}
 
-	public static class CountState {
-		private final int count;
-
-		public CountState(int count) {
-			this.count = count;
-		}
-
-		public int getValue() {
-			return count;
-		}
-	}
-
-	public static class SumReducer extends AbstractReducer<SumState> {
+	public static class SumReducer extends ReflectingReducer<Sum> {
 
 		public SumReducer() {
-			super(SumState.class);
+			super(Sum.class);
 		}
 
-		public SumState add(SumState state, AddAction action) {
-			return new SumState(state.getValue() + action.getAmount());
-		}
-
-	}
-
-	public static class CountReducer extends AbstractReducer<CountState> {
-
-		public CountReducer() {
-			super(CountState.class);
-		}
-
-		public CountState add(CountState state, Action action) {
-			return new CountState(state.getValue() + 1);
+		@ActionReducer
+		public Sum add(Sum state, AddAction action) {
+			return new Sum(state.getValue() + action.getAmount());
 		}
 
 	}
 
-	public static class AddAction implements Action {
+	public static class AddAction {
 
 		private final int amount;
 
@@ -92,32 +55,38 @@ public class ArthimeticExample {
 	}
 
 	public static void main(String[] args) {
-		ArthimeticStore store = new ArthimeticStore();
-		Dispatcher dispatcher = Rejux.createSuperStore(store);
 
-		System.out.println(store.getSum().getState().getValue());
-		System.out.println(store.getCount().getState().getValue());
+		ArthimeticState initial = () -> new Sum(0);
 
-		Subscription subscription = store.getSum()
-				.subscribe((s) -> System.out.println("Subscriber says: " + s.getValue()));
+		Store<ArthimeticState> store = Rejux.createStore(ArthimeticState.class, initial);
 
-		System.out.println();
-		dispatcher.dispatch(new AddAction(10));
-		System.out.println(store.getSum().getState().getValue());
-		System.out.println(store.getCount().getState().getValue());
+		System.out.println(store.get().getSum().getValue());
+
+		// System.out.println(store.get().getSum().get().getValue());
+		//
+		// Subscription subscription = store.get().getSum()
+		// .subscribe((s) -> System.out.println("Subscriber says: " + s.getValue()));
 
 		System.out.println();
-		dispatcher.dispatch(new AddAction(40));
-		System.out.println(store.getSum().getState().getValue());
-		System.out.println(store.getCount().getState().getValue());
+		store.dispatch(new AddAction(10));
+		System.out.println(store.get().getSum().getValue());
 
-		subscription.remove();
+		// System.out.println(store.get().getSum().get().getValue());
 
 		System.out.println();
-		dispatcher.dispatch(new AddAction(50));
+		store.dispatch(new AddAction(40));
+		System.out.println(store.get().getSum().getValue());
+
+		// System.out.println(store.get().getSum().get().getValue());
+
+		// subscription.remove();
+
+		System.out.println();
+		store.dispatch(new AddAction(50));
+		System.out.println(store.get().getSum().getValue());
+
 		System.out.println("(Subscriber should be quiet)");
-		System.out.println(store.getSum().getState().getValue());
-		System.out.println(store.getCount().getState().getValue());
+		// System.out.println(store.get().getSum().get().getValue());
 
 	}
 

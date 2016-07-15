@@ -4,37 +4,31 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import software.committed.rejux.interfaces.SettableState;
+import software.committed.rejux.interfaces.SubscribableState;
 import software.committed.rejux.interfaces.Subscriber;
 import software.committed.rejux.interfaces.Subscription;
 
-public class SimpleStateHolder<S> implements SettableState<S> {
+public class AbstractSubscribableState<S> extends AbstractState<S> implements SubscribableState<S> {
 
 	private final Set<Subscriber<S>> subscribers = Collections.synchronizedSet(new HashSet<>());
 
-	private S state;
-
-	protected SimpleStateHolder(S initial) {
-		this.state = initial;
+	public AbstractSubscribableState(Class<S> clazz, S initial) {
+		super(clazz, initial);
 	}
 
 	@Override
-	public synchronized void setState(S newState) {
-		if (newState != null && !newState.equals(state)) {
-			state = newState;
+	protected boolean setState(S newState) {
+		boolean changed = super.setState(newState);
+		if (changed) {
 			fireStateChanged();
 		}
+		return changed;
 	}
 
-	private void fireStateChanged() {
+	protected void fireStateChanged() {
 		if (state != null) {
 			subscribers.forEach(s -> s.onStateChanged(state));
 		}
-	}
-
-	@Override
-	public S getState() {
-		return state;
 	}
 
 	@Override

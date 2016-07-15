@@ -1,12 +1,13 @@
 package software.committed.rejux;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.lang.reflect.Proxy;
 
+import software.committed.rejux.impl.SimpleState;
 import software.committed.rejux.impl.SimpleStore;
-import software.committed.rejux.impl.SuperStore;
+import software.committed.rejux.impl.StateProxyHandler;
 import software.committed.rejux.interfaces.Middleware;
-import software.committed.rejux.interfaces.Reducer;
+import software.committed.rejux.interfaces.SubscribableState;
+import software.committed.rejux.interfaces.Store;
 
 public final class Rejux {
 
@@ -14,19 +15,14 @@ public final class Rejux {
 		// Singleton
 	}
 
-	public static <G> SuperStore<G> createSuperStore(G store) {
-		return new SuperStore<>(store, Collections.emptyList());
+	public static <S> Store<S> createStore(Class<S> clazz, S initialState, Middleware<? super S>... middleware) {
+		StateProxyHandler<S> handler = new StateProxyHandler<>(initialState);
+		S state = (S) Proxy.newProxyInstance(Rejux.class.getClassLoader(), new Class[] { clazz }, handler);
+		return new SimpleStore<>(clazz, state, handler, middleware);
 	}
 
-	public static <G> SuperStore<G> createSuperStore(G store, Middleware<? super G>... middlewares) {
-		return new SuperStore<>(store, Arrays.asList(middlewares));
+	public static <S> SubscribableState<S> createState(Class<S> clazz, S initialState, Middleware<? super S>... middleware) {
+		return new SimpleState<>(clazz, initialState);
 	}
 
-	public static <S> SimpleStore<S> createStore(S initialState, Reducer<S> reducer) {
-		return new SimpleStore<>(initialState, reducer, Collections.emptyList());
-	}
-
-	public static <S> SimpleStore<S> createStore(S initialState, Reducer<S> reducer, Middleware<S>... middlewares) {
-		return new SimpleStore<>(initialState, reducer, Arrays.asList(middlewares));
-	}
 }

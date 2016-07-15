@@ -1,49 +1,31 @@
 package software.committed.rejux.impl;
 
-import java.util.List;
-
-import software.committed.rejux.interfaces.Action;
 import software.committed.rejux.interfaces.Dispatcher;
 import software.committed.rejux.interfaces.Middleware;
-import software.committed.rejux.interfaces.Reducer;
-import software.committed.rejux.interfaces.State;
-import software.committed.rejux.interfaces.SubDispatcher;
-import software.committed.rejux.interfaces.Subscriber;
-import software.committed.rejux.interfaces.Subscription;
-import software.committed.rejux.utils.MiddlewareUtils;
+import software.committed.rejux.interfaces.Store;
 
-public class SimpleStore<S> implements State<S> {
+public class SimpleStore<S> extends AbstractSubscribableState<S> implements Store<S> {
 
-	private final SimpleStateHolder<S> holder;
-	private final Reducer<S> reducer;
-	private final SubDispatcher chain;
+	private final Dispatcher dispatchToStates;
 
-	public SimpleStore(S initialState, Reducer<S> reducer, List<Middleware<S>> middlewares) {
-		this.reducer = reducer;
-		holder = new SimpleStateHolder<>(initialState);
-
-		this.chain = MiddlewareUtils.createChain(holder, middlewares, this::reduce);
-	}
-
-	// NOTE: This is deliberately package level as it is accessed only StoreDispatcher
-	void dispatch(Dispatcher dispatcher, Action action) {
-		this.chain.dispatch(dispatcher, action);
-	}
-
-	private void reduce(Action action) {
-		S originalState = holder.getState();
-		S newState = reducer.reduce(originalState, action);
-		holder.setState(newState);
+	public SimpleStore(Class<S> clazz, S state, Dispatcher dispatchToStates, Middleware<? super S>[] middleware) {
+		super(clazz, state);
+		this.dispatchToStates = dispatchToStates;
 	}
 
 	@Override
-	public S getState() {
-		return holder.getState();
-	}
+	public void dispatch(Object action) {
+		// Discard nulls
+		if (action == null) {
+			return;
+		}
 
-	@Override
-	public Subscription subscribe(Subscriber<S> subscriber) {
-		return holder.subscribe(subscriber);
+		// TODO: Apply middleware
+
+		dispatchToStates.dispatch(action);
+
+		// TODO Only on update
+		fireStateChanged();
 	}
 
 }
