@@ -7,16 +7,14 @@ import java.util.List;
 
 import org.junit.Test;
 
-import software.committed.rejux.Rejux;
 import software.committed.rejux.impl.SimpleStore;
-import software.committed.rejux.utils.ReflectionUtils;
 
 public class ReflectionUtilsTest {
 
 	@Test
 	public void testFindParameterlessMethodsWithReturnType() {
 		Exemplar e = new Exemplar();
-		List<Method> list = ReflectionUtils.findParameterlessMethodsWithReturnType(e, SimpleStore.class);
+		List<Method> list = ReflectionUtils.findParameterlessMethodsWithReturnType(e, String.class);
 
 		assertThat(list)
 				.extracting("name")
@@ -58,20 +56,20 @@ public class ReflectionUtilsTest {
 
 		}
 
-		public SimpleStore<String> notAStoreAsParam(Integer doh) {
-			return Rejux.createStore("fail", (s, a) -> s);
+		public String notAStoreAsParam(Integer doh) {
+			return "fail";
 		}
 
-		public SimpleStore<String> validButNullStore() {
+		public String validButNullStore() {
 			return null;
 		}
 
-		public SimpleStore<String> getString() {
-			return Rejux.createStore("first", (s, a) -> s);
+		public String getString() {
+			return "first";
 		}
 
-		public SimpleStore<String> getAnotherString() {
-			return Rejux.createStore("another", (s, a) -> s);
+		public String getAnotherString() {
+			return "another";
 		}
 
 		public String hello(String value) {

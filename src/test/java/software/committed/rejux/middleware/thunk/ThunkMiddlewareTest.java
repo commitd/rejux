@@ -4,10 +4,9 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
-import software.committed.rejux.interfaces.Action;
 import software.committed.rejux.interfaces.Dispatcher;
 
-public class DispatcherThunkMiddlewareTest {
+public class ThunkMiddlewareTest {
 
 	@Test
 	public void testNonThunk() {
@@ -15,8 +14,7 @@ public class DispatcherThunkMiddlewareTest {
 
 		Dispatcher first = Mockito.mock(Dispatcher.class);
 		Dispatcher next = Mockito.mock(Dispatcher.class);
-		Action action = new Action() {
-		};
+		Object action = new Object();
 		Object state = new Object();
 
 		m.apply(first, state, action, next);

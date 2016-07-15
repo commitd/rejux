@@ -4,21 +4,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
-import software.committed.rejux.Rejux;
-import software.committed.rejux.impl.SimpleStore;
-import software.committed.rejux.impl.SuperStore;
+import software.committed.rejux.interfaces.State;
+import software.committed.rejux.interfaces.Store;
 
 public class RejuxTest {
 
-	@Test
-	public void createSuperstore() {
-		SuperStore<Object> superstore = Rejux.createSuperStore(new Object());
-		assertThat(superstore).isNotNull();
+	public interface FakeState {
+
+		String test();
 	}
 
 	@Test
 	public void createStore() {
-		SimpleStore<Object> superstore = Rejux.createStore(new Object(), (s, a) -> s);
-		assertThat(superstore).isNotNull();
+		Store<FakeState> store = Rejux.createStore(FakeState.class, () -> "test");
+		assertThat(store).isNotNull();
+	}
+
+	@Test
+	public void createState() {
+		State<Object> state = Rejux.createState(Object.class, new Object());
+		assertThat(state).isNotNull();
 	}
 }

@@ -7,40 +7,25 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import software.committed.rejux.annotations.Reduce;
 import software.committed.rejux.impl.ReflectingReducer;
-import software.committed.rejux.impl.SimpleStore;
-import software.committed.rejux.interfaces.Action;
-import software.committed.rejux.interfaces.Dispatcher;
+import software.committed.rejux.interfaces.Store;
+import software.committed.rejux.interfaces.SubscribableState;
 import software.committed.rejux.interfaces.Subscriber;
 import software.committed.rejux.interfaces.Subscription;
 
 public class RejuxFullApiTest {
-
-	public static class ArthimeticStore {
-
-		private final SimpleStore<SumState> sum;
-
-		public ArthimeticStore() {
-			sum = Rejux.createStore(new SumState(0), new SumReducer());
-		}
-
-		public Subscription subscribe(Subscriber<SumState> subscriber) {
-			return sum.subscribe(subscriber);
-		}
-
-		public SimpleStore<SumState> getSum() {
-			return sum;
-		}
-
-		public int getSumValue() {
-			return sum.getState().getValue();
-		}
+	public interface ArthimeticState {
+		@Reduce(SumReducer.class)
+		SubscribableState<Sum> getSum();
 	}
 
-	public static class SumState {
+	// NOTE: This normally be an immutable (dexx or immutables)
+	public static class Sum {
+
 		private final int sum;
 
-		public SumState(int sum) {
+		public Sum(int sum) {
 			this.sum = sum;
 		}
 
@@ -49,24 +34,37 @@ public class RejuxFullApiTest {
 		}
 	}
 
-	public static class SumReducer extends ReflectingReducer<SumState> {
+	public static class Count {
 
-		public SumReducer() {
-			super(SumState.class);
+		private final int count;
+
+		public Count(int count) {
+			this.count = count;
 		}
 
-		public SumState add(SumState state, AddAction action) {
-			return new SumState(state.getValue() + action.getAmount());
+		public int getValue() {
+			return count;
+		}
+	}
+
+	public static class SumReducer extends ReflectingReducer<Sum> {
+
+		public SumReducer() {
+			super(Sum.class);
+		}
+
+		public Sum add(Sum state, AddAction action) {
+			return new Sum(state.getValue() + action.getAmount());
 		}
 
 	}
 
-	public static class CountSubscriber implements Subscriber<SumState> {
+	public static class CountSubscriber implements Subscriber<ArthimeticState> {
 
 		private int count;
 
 		@Override
-		public void onStateChanged(SumState state) {
+		public void onStateChanged(ArthimeticState state) {
 			count++;
 		}
 
@@ -75,7 +73,7 @@ public class RejuxFullApiTest {
 		}
 	}
 
-	public static class AddAction implements Action {
+	public static class AddAction {
 
 		private final int amount;
 
@@ -90,47 +88,42 @@ public class RejuxFullApiTest {
 	}
 
 	@Test
-	public void canCreateStore() {
-		ArthimeticStore store = new ArthimeticStore();
-		assertNotNull(store);
-		assertEquals(0, store.getSumValue());
-	}
-
-	@Test
-	public void canCreateDispatch() {
-		assertNotNull(Rejux.createSuperStore(new ArthimeticStore()));
-	}
-
-	@Test
 	public void canDispatchAction() {
-		ArthimeticStore store = new ArthimeticStore();
-		Dispatcher dispatcher = Rejux.createSuperStore(store);
-		assertEquals(0, store.getSumValue());
-		dispatcher.dispatch(new AddAction(10));
-		assertEquals(10, store.getSumValue());
+		ArthimeticState initial = () -> Rejux.createState(Sum.class, new Sum(0));
+		Store<ArthimeticState> store = Rejux.createStore(ArthimeticState.class, initial);
+
+		assertNotNull(store);
+		assertEquals(0, store.get().getSum().get().getValue());
+		store.dispatch(new AddAction(10));
+		assertEquals(10, store.get().getSum().get().getValue());
 	}
 
 	@Test
 	public void canSubscribe() {
-		ArthimeticStore store = new ArthimeticStore();
-		Dispatcher dispatcher = Rejux.createSuperStore(store);
-		assertEquals(0, store.getSumValue());
+		ArthimeticState initial = () -> Rejux.createState(Sum.class, new Sum(0));
+		Store<ArthimeticState> store = Rejux.createStore(ArthimeticState.class, initial);
+
+		assertNotNull(store);
+		assertEquals(0, store.get().getSum().get().getValue());
+		store.dispatch(new AddAction(10));
 
 		CountSubscriber subscriber = new CountSubscriber();
 
 		Subscription subscription = store.subscribe(subscriber);
 		assertTrue(subscription.isSubscribed());
+		store.dispatch(new AddAction(10));
 
-		dispatcher.dispatch(new AddAction(10));
-
-		assertEquals(10, store.getSumValue());
+		assertEquals(10, store.get().getSum().get().getValue());
 
 		assertEquals(1, subscriber.getCount());
 
 		subscription.remove();
 		assertFalse(subscription.isSubscribed());
+		store.dispatch(new AddAction(10));
 
 		assertEquals(1, subscriber.getCount());
+		assertEquals(20, store.get().getSum().get().getValue());
+
 	}
 
 }

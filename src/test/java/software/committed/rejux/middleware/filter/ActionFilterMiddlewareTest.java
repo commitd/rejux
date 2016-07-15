@@ -4,10 +4,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
-import software.committed.rejux.interfaces.Action;
 import software.committed.rejux.interfaces.Dispatcher;
-import software.committed.rejux.middleware.filter.ActionFilter;
-import software.committed.rejux.middleware.filter.ActionFilterMiddleware;
 
 public class ActionFilterMiddlewareTest {
 
@@ -18,8 +15,7 @@ public class ActionFilterMiddlewareTest {
 
 		Dispatcher first = Mockito.mock(Dispatcher.class);
 		Dispatcher next = Mockito.mock(Dispatcher.class);
-		Action action = new Action() {
-		};
+		Object action = new Object();
 		Object state = new Object();
 
 		m.apply(first, state, action, next);
@@ -35,8 +31,8 @@ public class ActionFilterMiddlewareTest {
 
 		Dispatcher first = Mockito.mock(Dispatcher.class);
 		Dispatcher next = Mockito.mock(Dispatcher.class);
-		Action action = new Action() {
-		};
+		Object action = new Object();
+
 		Object state = new Object();
 
 		m.apply(first, state, action, next);
@@ -53,8 +49,8 @@ public class ActionFilterMiddlewareTest {
 
 		Dispatcher first = Mockito.mock(Dispatcher.class);
 		Dispatcher next = Mockito.mock(Dispatcher.class);
-		Action action = new Action() {
-		};
+		Object action = new Object();
+
 		Object state = new Object();
 
 		m.apply(first, state, action, next);
