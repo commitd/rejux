@@ -1,16 +1,16 @@
 package software.committed.rejux.impl;
 
-import software.committed.rejux.interfaces.Dispatcher;
 import software.committed.rejux.interfaces.Middleware;
 import software.committed.rejux.interfaces.Store;
 
 public class SimpleStore<S> extends AbstractSubscribableState<S> implements Store<S> {
 
-	private final Dispatcher dispatchToStates;
+	private final CombinedReducer<S> reducer;
 
-	public SimpleStore(Class<S> clazz, S state, Dispatcher dispatchToStates, Middleware<? super S>[] middleware) {
+	public SimpleStore(Class<S> clazz, S state, CombinedReducer<S> reducer,
+			Middleware<? super S>[] middleware) {
 		super(clazz, state);
-		this.dispatchToStates = dispatchToStates;
+		this.reducer = reducer;
 	}
 
 	@Override
@@ -22,10 +22,12 @@ public class SimpleStore<S> extends AbstractSubscribableState<S> implements Stor
 
 		// TODO: Apply middleware
 
-		dispatchToStates.dispatch(action);
+		boolean changed = reducer.dispatch(this, action);
 
 		// TODO Only on update
-		fireStateChanged();
+		if (changed) {
+			fireStateChanged();
+		}
 	}
 
 }
