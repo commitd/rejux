@@ -1,8 +1,8 @@
 package software.committed.rejux.middleware.thunk;
 
-import software.committed.rejux.Action;
-import software.committed.rejux.Dispatcher;
-import software.committed.rejux.Middleware;
+import software.committed.rejux.interfaces.Action;
+import software.committed.rejux.interfaces.Dispatcher;
+import software.committed.rejux.interfaces.Middleware;
 
 public class DispatcherThunkMiddleware<G> implements Middleware<G> {
 

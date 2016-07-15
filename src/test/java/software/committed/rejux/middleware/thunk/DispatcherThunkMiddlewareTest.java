@@ -4,8 +4,8 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
-import software.committed.rejux.Action;
-import software.committed.rejux.Dispatcher;
+import software.committed.rejux.interfaces.Action;
+import software.committed.rejux.interfaces.Dispatcher;
 import software.committed.rejux.middleware.thunk.DispatcherThunkAction;
 import software.committed.rejux.middleware.thunk.DispatcherThunkMiddleware;
 

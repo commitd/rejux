@@ -1,8 +1,8 @@
 package software.committed.rejux.middleware.filter;
 
-import software.committed.rejux.Action;
-import software.committed.rejux.Dispatcher;
-import software.committed.rejux.StatefulMiddleware;
+import software.committed.rejux.interfaces.Action;
+import software.committed.rejux.interfaces.Dispatcher;
+import software.committed.rejux.interfaces.StatefulMiddleware;
 
 public class ActionFilterMiddleware<S> implements StatefulMiddleware<S> {
 

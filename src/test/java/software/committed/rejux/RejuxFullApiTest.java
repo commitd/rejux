@@ -8,13 +8,17 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import software.committed.rejux.impl.AbstractReducer;
-import software.committed.rejux.impl.Store;
+import software.committed.rejux.impl.SimpleStore;
+import software.committed.rejux.interfaces.Action;
+import software.committed.rejux.interfaces.Dispatcher;
+import software.committed.rejux.interfaces.Subscriber;
+import software.committed.rejux.interfaces.Subscription;
 
 public class RejuxFullApiTest {
 
 	public static class ArthimeticStore {
 
-		private final Store<SumState> sum;
+		private final SimpleStore<SumState> sum;
 
 		public ArthimeticStore() {
 			sum = Rejux.createStore(new SumState(0), new SumReducer());
@@ -24,7 +28,7 @@ public class RejuxFullApiTest {
 			return sum.subscribe(subscriber);
 		}
 
-		public Store<SumState> getSum() {
+		public SimpleStore<SumState> getSum() {
 			return sum;
 		}
 

@@ -7,9 +7,9 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
-import software.committed.rejux.Action;
-import software.committed.rejux.Dispatcher;
-import software.committed.rejux.Middleware;
+import software.committed.rejux.interfaces.Action;
+import software.committed.rejux.interfaces.Dispatcher;
+import software.committed.rejux.interfaces.Middleware;
 import software.committed.rejux.utils.MiddlewareUtils;
 
 public class MiddlewareUtilsTest {

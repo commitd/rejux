@@ -2,12 +2,12 @@ package software.committed.rejux.utils;
 
 import java.util.List;
 
-import software.committed.rejux.Action;
-import software.committed.rejux.Dispatcher;
-import software.committed.rejux.Middleware;
-import software.committed.rejux.StateHolder;
-import software.committed.rejux.StatefulMiddleware;
-import software.committed.rejux.SubDispatcher;
+import software.committed.rejux.interfaces.Action;
+import software.committed.rejux.interfaces.Dispatcher;
+import software.committed.rejux.interfaces.Middleware;
+import software.committed.rejux.interfaces.StateHolder;
+import software.committed.rejux.interfaces.StatefulMiddleware;
+import software.committed.rejux.interfaces.SubDispatcher;
 
 public final class MiddlewareUtils {
 

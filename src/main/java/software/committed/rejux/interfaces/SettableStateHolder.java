@@ -1,4 +1,4 @@
-package software.committed.rejux;
+package software.committed.rejux.interfaces;
 
 public interface SettableStateHolder<S> extends StateHolder<S> {
 

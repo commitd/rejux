@@ -1,4 +1,4 @@
-package software.committed.rejux;
+package software.committed.rejux.interfaces;
 
 @FunctionalInterface
 public interface Reducer<S> {

@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.Test;
 
 import software.committed.rejux.Rejux;
-import software.committed.rejux.impl.Store;
+import software.committed.rejux.impl.SimpleStore;
 import software.committed.rejux.utils.ReflectionUtils;
 
 public class ReflectionUtilsTest {
@@ -16,7 +16,7 @@ public class ReflectionUtilsTest {
 	@Test
 	public void testFindParameterlessMethodsWithReturnType() {
 		Exemplar e = new Exemplar();
-		List<Method> list = ReflectionUtils.findParameterlessMethodsWithReturnType(e, Store.class);
+		List<Method> list = ReflectionUtils.findParameterlessMethodsWithReturnType(e, SimpleStore.class);
 
 		assertThat(list)
 				.extracting("name")
@@ -26,7 +26,7 @@ public class ReflectionUtilsTest {
 	@Test
 	public void testGetAllReturnedOfType() {
 		Exemplar e = new Exemplar();
-		List<Store> list = ReflectionUtils.getAllReturnedOfType(e, Store.class);
+		List<SimpleStore> list = ReflectionUtils.getAllReturnedOfType(e, SimpleStore.class);
 
 		assertThat(list).hasSize(2);
 	}
@@ -34,7 +34,7 @@ public class ReflectionUtilsTest {
 	@Test
 	public void testFindMethods() {
 		Exemplar e = new Exemplar();
-		List<Method> list = ReflectionUtils.findMethods(e, Store.class, Integer.class);
+		List<Method> list = ReflectionUtils.findMethods(e, SimpleStore.class, Integer.class);
 
 		assertThat(list).hasSize(1).extracting("name").containsExactly("notAStoreAsParam");
 	}
@@ -58,19 +58,19 @@ public class ReflectionUtilsTest {
 
 		}
 
-		public Store<String> notAStoreAsParam(Integer doh) {
+		public SimpleStore<String> notAStoreAsParam(Integer doh) {
 			return Rejux.createStore("fail", (s, a) -> s);
 		}
 
-		public Store<String> validButNullStore() {
+		public SimpleStore<String> validButNullStore() {
 			return null;
 		}
 
-		public Store<String> getString() {
+		public SimpleStore<String> getString() {
 			return Rejux.createStore("first", (s, a) -> s);
 		}
 
-		public Store<String> getAnotherString() {
+		public SimpleStore<String> getAnotherString() {
 			return Rejux.createStore("another", (s, a) -> s);
 		}
 

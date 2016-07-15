@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
 import software.committed.rejux.Rejux;
-import software.committed.rejux.impl.Store;
+import software.committed.rejux.impl.SimpleStore;
 import software.committed.rejux.impl.SuperStore;
 
 public class RejuxTest {
@@ -18,7 +18,7 @@ public class RejuxTest {
 
 	@Test
 	public void createStore() {
-		Store<Object> superstore = Rejux.createStore(new Object(), (s, a) -> s);
+		SimpleStore<Object> superstore = Rejux.createStore(new Object(), (s, a) -> s);
 		assertThat(superstore).isNotNull();
 	}
 }

@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import software.committed.rejux.Action;
-import software.committed.rejux.Reducer;
+import software.committed.rejux.interfaces.Action;
+import software.committed.rejux.interfaces.Reducer;
 import software.committed.rejux.utils.ReflectionUtils;
 
 public abstract class AbstractReducer<S> implements Reducer<S> {

@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import software.committed.rejux.SettableStateHolder;
-import software.committed.rejux.Subscriber;
-import software.committed.rejux.Subscription;
+import software.committed.rejux.interfaces.SettableStateHolder;
+import software.committed.rejux.interfaces.Subscriber;
+import software.committed.rejux.interfaces.Subscription;
 
 public class SimpleStateHolder<S> implements SettableStateHolder<S> {
 
