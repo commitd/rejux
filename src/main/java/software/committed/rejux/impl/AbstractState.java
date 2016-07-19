@@ -26,7 +26,7 @@ public class AbstractState<S> implements State<S> {
   }
 
   @Override
-  public S get() {
+  public S state() {
     return state;
   }
 

@@ -1,12 +1,26 @@
 package software.committed.rejux.interfaces;
 
-public interface State<S> {
+import java.util.function.Supplier;
 
+public interface State<S> extends Supplier<S> {
+
+  /**
+   * Get the Java class of the state (to compensate for type erasure in Java).
+   *
+   * @return class of the state
+   */
   Class<S> getType();
 
-  S get();
+  /**
+   * Alternative alias for get() which can look cleaner in code.
+   *
+   * @return the state
+   */
+  S state();
 
-  default S state() {
-    return get();
+
+  @Override
+  default S get() {
+    return state();
   }
 }
