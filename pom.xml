@@ -57,6 +57,20 @@
 					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+			    <groupId>org.pitest</groupId>
+			    <artifactId>pitest-maven</artifactId>
+			    <version>LATEST</version>
+			    <configuration>
+			        <targetClasses>
+			            <param>committed.software.rejux*</param>
+			        </targetClasses>
+			        <targetTests>
+			            <param>committed.software.rejux*</param>
+			        </targetTests>
+			    </configuration>
+			</plugin>			
 		</plugins>
 	</build>
 </project>
