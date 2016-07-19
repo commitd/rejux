@@ -1,6 +1,5 @@
 package software.committed.rejux.impl;
 
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
@@ -19,11 +18,16 @@ public class StateProxyHandler<S> implements InvocationHandler {
     final String methodName = method.getName();
 
     // If we have a default we can directly use that...
-    if (method.isDefault()) {
-      return MethodHandles.lookup().in(method.getDeclaringClass())
-          .unreflectSpecial(method, method.getDeclaringClass()).bindTo(proxy)
-          .invokeWithArguments(args);
-    }
+    // TODO: This does not work (see notes in the unit test)
+    // if (method.isDefault()) {
+    // try {
+    // return MethodHandles.lookup().in(method.getDeclaringClass())
+    // .unreflectSpecial(method, method.getDeclaringClass()).bindTo(proxy)
+    // .invokeWithArguments(args);
+    // } catch (Exception ex) {
+    // return null;
+    // }
+    // }
 
     // Could it be a state method...
     if (combinedState.isStateMethod(method)) {
