@@ -8,54 +8,54 @@ import software.committed.rejux.interfaces.Dispatcher;
 
 public class ActionFilterMiddlewareTest {
 
-	@Test
-	public void testNever() {
+  @Test
+  public void testNever() {
 
-		ActionFilterMiddleware<Object> m = new ActionFilterMiddleware<>(a -> false);
+    final ActionFilterMiddleware<Object> m = new ActionFilterMiddleware<>(a -> false);
 
-		Dispatcher first = Mockito.mock(Dispatcher.class);
-		Dispatcher next = Mockito.mock(Dispatcher.class);
-		Object action = new Object();
-		Object state = new Object();
+    final Dispatcher first = Mockito.mock(Dispatcher.class);
+    final Dispatcher next = Mockito.mock(Dispatcher.class);
+    final Object action = new Object();
+    final Object state = new Object();
 
-		m.apply(first, state, action, next);
+    m.apply(first, state, action, next);
 
-		Mockito.verify(first, Mockito.never()).dispatch(Matchers.any());
-		Mockito.verify(next, Mockito.never()).dispatch(Matchers.any());
-	}
+    Mockito.verify(first, Mockito.never()).dispatch(Matchers.any());
+    Mockito.verify(next, Mockito.never()).dispatch(Matchers.any());
+  }
 
-	@Test
-	public void testAlways() {
+  @Test
+  public void testAlways() {
 
-		ActionFilterMiddleware<Object> m = new ActionFilterMiddleware<>(a -> true);
+    final ActionFilterMiddleware<Object> m = new ActionFilterMiddleware<>(a -> true);
 
-		Dispatcher first = Mockito.mock(Dispatcher.class);
-		Dispatcher next = Mockito.mock(Dispatcher.class);
-		Object action = new Object();
+    final Dispatcher first = Mockito.mock(Dispatcher.class);
+    final Dispatcher next = Mockito.mock(Dispatcher.class);
+    final Object action = new Object();
 
-		Object state = new Object();
+    final Object state = new Object();
 
-		m.apply(first, state, action, next);
+    m.apply(first, state, action, next);
 
-		Mockito.verify(first, Mockito.never()).dispatch(Matchers.any());
-		Mockito.verify(next).dispatch(Matchers.any());
-	}
+    Mockito.verify(first, Mockito.never()).dispatch(Matchers.any());
+    Mockito.verify(next).dispatch(Matchers.any());
+  }
 
-	@Test
-	public void testAccepts() {
+  @Test
+  public void testAccepts() {
 
-		ActionFilter filter = Mockito.mock(ActionFilter.class);
-		ActionFilterMiddleware<Object> m = new ActionFilterMiddleware<>(filter);
+    final ActionFilter filter = Mockito.mock(ActionFilter.class);
+    final ActionFilterMiddleware<Object> m = new ActionFilterMiddleware<>(filter);
 
-		Dispatcher first = Mockito.mock(Dispatcher.class);
-		Dispatcher next = Mockito.mock(Dispatcher.class);
-		Object action = new Object();
+    final Dispatcher first = Mockito.mock(Dispatcher.class);
+    final Dispatcher next = Mockito.mock(Dispatcher.class);
+    final Object action = new Object();
 
-		Object state = new Object();
+    final Object state = new Object();
 
-		m.apply(first, state, action, next);
+    m.apply(first, state, action, next);
 
-		Mockito.verify(filter).accepts(action);
-	}
+    Mockito.verify(filter).accepts(action);
+  }
 
 }

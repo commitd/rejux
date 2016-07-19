@@ -15,5 +15,5 @@ import software.committed.rejux.interfaces.Reducer;
 @Inherited
 public @interface Reduce {
 
-	Class<? extends Reducer<?>> value();
+  Class<? extends Reducer<?>> value();
 }

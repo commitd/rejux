@@ -5,17 +5,18 @@ import software.committed.rejux.interfaces.Middleware;
 
 public class ActionFilterMiddleware<S> implements Middleware<S> {
 
-	private final ActionFilter filter;
+  private final ActionFilter filter;
 
-	public ActionFilterMiddleware(ActionFilter filter) {
-		this.filter = filter;
-	}
+  public ActionFilterMiddleware(final ActionFilter filter) {
+    this.filter = filter;
+  }
 
-	@Override
-	public void apply(Dispatcher first, S state, Object action, Dispatcher next) {
-		if (filter.accepts(action)) {
-			next.dispatch(action);
-		}
-	}
+  @Override
+  public void apply(final Dispatcher first, final S state, final Object action,
+      final Dispatcher next) {
+    if (filter.accepts(action)) {
+      next.dispatch(action);
+    }
+  }
 
 }

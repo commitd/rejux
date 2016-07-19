@@ -1,79 +1,82 @@
 package software.committed.rejux.utils;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
-
-import software.committed.rejux.impl.SimpleStore;
 
 public class ReflectionUtilsTest {
 
-	@Test
-	public void testFindParameterlessMethodsWithReturnType() {
-		Exemplar e = new Exemplar();
-		List<Method> list = ReflectionUtils.findParameterlessMethodsWithReturnType(e, String.class);
+  @Test
+  public void testFindParameterlessMethodsWithReturnType() {
+    final Exemplar e = new Exemplar();
+    final List<Method> list =
+        ReflectionUtils.findParameterlessMethodsWithReturnType(e, String.class);
 
-		assertThat(list)
-				.extracting("name")
-				.containsExactlyInAnyOrder("validButNullStore", "getString", "getAnotherString");
-	}
+    Assertions.assertThat(list).extracting("name").containsExactlyInAnyOrder("validButNullStore",
+        "getString", "getAnotherString", "toString");
+  }
 
-	@Test
-	public void testGetAllReturnedOfType() {
-		Exemplar e = new Exemplar();
-		List<SimpleStore> list = ReflectionUtils.getAllReturnedOfType(e, SimpleStore.class);
+  @Test
+  public void testGetAllReturnedOfType() {
+    final Exemplar e = new Exemplar();
+    final List<String> list = ReflectionUtils.getAllReturnedOfType(e, String.class);
 
-		assertThat(list).hasSize(2);
-	}
+    Assertions.assertThat(list).containsExactlyInAnyOrder("first", "another", "toString");
+  }
 
-	@Test
-	public void testFindMethods() {
-		Exemplar e = new Exemplar();
-		List<Method> list = ReflectionUtils.findMethods(e, SimpleStore.class, Integer.class);
+  @Test
+  public void testFindMethods() {
+    final Exemplar e = new Exemplar();
+    final List<Method> list = ReflectionUtils.findMethods(e, String.class, Integer.class);
 
-		assertThat(list).hasSize(1).extracting("name").containsExactly("notAStoreAsParam");
-	}
+    Assertions.assertThat(list).hasSize(1).extracting("name").containsExactly("notAStoreAsParam");
+  }
 
-	@Test
-	public void testCallWithDefault() throws NoSuchMethodException, SecurityException {
+  @Test
+  public void testCallWithDefault() throws NoSuchMethodException, SecurityException {
 
-		Exemplar e = new Exemplar();
-		Method m = e.getClass().getMethod("hello", String.class);
-		String ok = ReflectionUtils.callWithDefaultReturn(e, String.class, "fail", m, "world");
+    final Exemplar e = new Exemplar();
+    final Method m = e.getClass().getMethod("hello", String.class);
+    final String ok = ReflectionUtils.callWithDefaultReturn(e, String.class, "fail", m, "world");
 
-		assertThat(ok).isEqualTo("hello world");
+    Assertions.assertThat(ok).isEqualTo("hello world");
 
-		String err = ReflectionUtils.callWithDefaultReturn(e, String.class, "fail", m);
-		assertThat(err).isEqualTo("fail");
-	}
+    final String err = ReflectionUtils.callWithDefaultReturn(e, String.class, "fail", m);
+    Assertions.assertThat(err).isEqualTo("fail");
+  }
 
-	public class Exemplar {
+  public class Exemplar {
 
-		public void notAtStore() {
+    public void notAtStore() {
 
-		}
+    }
 
-		public String notAStoreAsParam(Integer doh) {
-			return "fail";
-		}
+    public String notAStoreAsParam(final Integer doh) {
+      return "fail";
+    }
 
-		public String validButNullStore() {
-			return null;
-		}
+    public String validButNullStore() {
+      return null;
+    }
 
-		public String getString() {
-			return "first";
-		}
+    public String getString() {
+      return "first";
+    }
 
-		public String getAnotherString() {
-			return "another";
-		}
+    public String getAnotherString() {
+      return "another";
+    }
 
-		public String hello(String value) {
-			return "hello " + value;
-		}
-	}
+    public String hello(final String value) {
+      return "hello " + value;
+    }
+
+    @Override
+    public String toString() {
+      return "toString";
+    }
+
+  }
 }

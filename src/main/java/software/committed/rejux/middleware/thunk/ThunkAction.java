@@ -5,5 +5,5 @@ import software.committed.rejux.interfaces.Dispatcher;
 @FunctionalInterface
 public interface ThunkAction<G> {
 
-	void execute(Dispatcher dispatcher, G store);
+  void execute(Dispatcher dispatcher, G store);
 }

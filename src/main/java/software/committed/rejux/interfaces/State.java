@@ -2,11 +2,11 @@ package software.committed.rejux.interfaces;
 
 public interface State<S> {
 
-	Class<S> getType();
+  Class<S> getType();
 
-	S get();
+  S get();
 
-	default S state() {
-		return get();
-	}
+  default S state() {
+    return get();
+  }
 }

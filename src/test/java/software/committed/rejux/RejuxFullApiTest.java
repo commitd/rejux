@@ -1,10 +1,6 @@
 package software.committed.rejux;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 import software.committed.rejux.annotations.Reduce;
@@ -15,115 +11,116 @@ import software.committed.rejux.interfaces.Subscriber;
 import software.committed.rejux.interfaces.Subscription;
 
 public class RejuxFullApiTest {
-	public interface ArthimeticState {
-		@Reduce(SumReducer.class)
-		SubscribableState<Sum> getSum();
-	}
+  public interface ArthimeticState {
+    @Reduce(SumReducer.class)
+    SubscribableState<Sum> getSum();
+  }
 
-	// NOTE: This normally be an immutable (dexx or immutables)
-	public static class Sum {
+  // NOTE: This normally be an immutable (dexx or immutables)
+  public static class Sum {
 
-		private final int sum;
+    private final int sum;
 
-		public Sum(int sum) {
-			this.sum = sum;
-		}
+    public Sum(final int sum) {
+      this.sum = sum;
+    }
 
-		public int getValue() {
-			return sum;
-		}
-	}
+    public int getValue() {
+      return sum;
+    }
+  }
 
-	public static class Count {
+  public static class Count {
 
-		private final int count;
+    private final int count;
 
-		public Count(int count) {
-			this.count = count;
-		}
+    public Count(final int count) {
+      this.count = count;
+    }
 
-		public int getValue() {
-			return count;
-		}
-	}
+    public int getValue() {
+      return count;
+    }
+  }
 
-	public static class SumReducer extends ReflectingReducer<Sum> {
+  public static class SumReducer extends ReflectingReducer<Sum> {
 
-		public SumReducer() {
-			super(Sum.class);
-		}
+    public SumReducer() {
+      super(Sum.class);
+    }
 
-		public Sum add(Sum state, AddAction action) {
-			return new Sum(state.getValue() + action.getAmount());
-		}
+    public Sum add(final Sum state, final AddAction action) {
+      return new Sum(state.getValue() + action.getAmount());
+    }
 
-	}
+  }
 
-	public static class CountSubscriber implements Subscriber<ArthimeticState> {
+  public static class CountSubscriber implements Subscriber<ArthimeticState> {
 
-		private int count;
+    private int count;
 
-		@Override
-		public void onStateChanged(ArthimeticState state) {
-			count++;
-		}
+    @Override
+    public void onStateChanged(final ArthimeticState state) {
+      count++;
+    }
 
-		public int getCount() {
-			return count;
-		}
-	}
+    public int getCount() {
+      return count;
+    }
+  }
 
-	public static class AddAction {
+  public static class AddAction {
 
-		private final int amount;
+    private final int amount;
 
-		public AddAction(int amount) {
-			this.amount = amount;
-		}
+    public AddAction(final int amount) {
+      this.amount = amount;
+    }
 
-		public int getAmount() {
-			return amount;
-		}
+    public int getAmount() {
+      return amount;
+    }
 
-	}
+  }
 
-	@Test
-	public void canDispatchAction() {
-		ArthimeticState initial = () -> Rejux.createState(Sum.class, new Sum(0));
-		Store<ArthimeticState> store = Rejux.createStore(ArthimeticState.class, initial);
+  @Test
+  public void canDispatchAction() {
+    final ArthimeticState initial = () -> Rejux.createState(Sum.class, new Sum(0));
+    final Store<ArthimeticState> store = Rejux.createStore(ArthimeticState.class, initial);
 
-		assertNotNull(store);
-		assertEquals(0, store.get().getSum().get().getValue());
-		store.dispatch(new AddAction(10));
-		assertEquals(10, store.get().getSum().get().getValue());
-	}
+    Assert.assertNotNull(store);
+    Assert.assertEquals(0, store.get().getSum().get().getValue());
+    store.dispatch(new AddAction(10));
+    Assert.assertEquals(10, store.get().getSum().get().getValue());
+  }
 
-	@Test
-	public void canSubscribe() {
-		ArthimeticState initial = () -> Rejux.createState(Sum.class, new Sum(0));
-		Store<ArthimeticState> store = Rejux.createStore(ArthimeticState.class, initial);
+  @Test
+  public void canSubscribe() {
+    final ArthimeticState initial = () -> Rejux.createState(Sum.class, new Sum(0));
+    final Store<ArthimeticState> store = Rejux.createStore(ArthimeticState.class, initial);
 
-		assertNotNull(store);
-		assertEquals(0, store.get().getSum().get().getValue());
-		store.dispatch(new AddAction(10));
+    Assert.assertNotNull(store);
+    Assert.assertEquals(0, store.get().getSum().get().getValue());
+    store.dispatch(new AddAction(10));
 
-		CountSubscriber subscriber = new CountSubscriber();
+    final CountSubscriber subscriber = new CountSubscriber();
+    Assert.assertEquals(0, subscriber.getCount());
 
-		Subscription subscription = store.subscribe(subscriber);
-		assertTrue(subscription.isSubscribed());
-		store.dispatch(new AddAction(10));
+    final Subscription subscription = store.subscribe(subscriber);
+    Assert.assertTrue(subscription.isSubscribed());
+    store.dispatch(new AddAction(20));
 
-		assertEquals(10, store.get().getSum().get().getValue());
+    Assert.assertEquals(30, store.get().getSum().get().getValue());
 
-		assertEquals(1, subscriber.getCount());
+    Assert.assertEquals(1, subscriber.getCount());
 
-		subscription.remove();
-		assertFalse(subscription.isSubscribed());
-		store.dispatch(new AddAction(10));
+    subscription.remove();
+    Assert.assertFalse(subscription.isSubscribed());
+    store.dispatch(new AddAction(40));
 
-		assertEquals(1, subscriber.getCount());
-		assertEquals(20, store.get().getSum().get().getValue());
+    Assert.assertEquals(1, subscriber.getCount());
+    Assert.assertEquals(70, store.get().getSum().get().getValue());
 
-	}
+  }
 
 }

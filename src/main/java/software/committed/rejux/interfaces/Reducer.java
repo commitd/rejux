@@ -2,8 +2,8 @@ package software.committed.rejux.interfaces;
 
 public interface Reducer<S> {
 
-	Class<S> getType();
+  Class<S> getType();
 
-	S reduce(S state, Object action);
+  S reduce(S state, Object action);
 
 }

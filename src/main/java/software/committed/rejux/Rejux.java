@@ -14,23 +14,25 @@ import software.committed.rejux.interfaces.SubscribableState;
 
 public final class Rejux {
 
-	private Rejux() {
-		// Singleton
-	}
+  private Rejux() {
+    // Singleton
+  }
 
-	public static <S> Store<S> createStore(Class<S> clazz, S initialState, Middleware<? super S>... middleware) {
-		CombinedState<S> combinedState = new CombinedState<>(initialState);
-		CombinedReducer<S> combinedReducer = new CombinedReducer<>(initialState, combinedState);
+  public static <S> Store<S> createStore(final Class<S> clazz, final S initialState,
+      final Middleware<? super S>... middleware) {
+    final CombinedState<S> combinedState = new CombinedState<>(initialState);
+    final CombinedReducer<S> combinedReducer = new CombinedReducer<>(initialState, combinedState);
 
-		StateProxyHandler<S> handler = new StateProxyHandler<>(combinedState);
-		S state = (S) Proxy.newProxyInstance(Rejux.class.getClassLoader(), new Class[] { clazz }, handler);
+    final StateProxyHandler<S> handler = new StateProxyHandler<>(combinedState);
+    final S state =
+        (S) Proxy.newProxyInstance(Rejux.class.getClassLoader(), new Class[] {clazz}, handler);
 
-		return new SimpleStore<>(clazz, state, combinedReducer, Arrays.asList(middleware));
-	}
+    return new SimpleStore<>(clazz, state, combinedReducer, Arrays.asList(middleware));
+  }
 
-	public static <S> SubscribableState<S> createState(Class<S> clazz, S initialState,
-			Middleware<? super S>... middleware) {
-		return new SimpleState<>(clazz, initialState, Arrays.asList(middleware));
-	}
+  public static <S> SubscribableState<S> createState(final Class<S> clazz, final S initialState,
+      final Middleware<? super S>... middleware) {
+    return new SimpleState<>(clazz, initialState, Arrays.asList(middleware));
+  }
 
 }

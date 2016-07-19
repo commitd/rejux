@@ -9,33 +9,33 @@ import software.committed.rejux.utils.MiddlewareUtils;
 
 public class SimpleStore<S> extends AbstractSubscribableState<S> implements Store<S> {
 
-	private final CombinedReducer<S> reducer;
-	private final Dispatcher chain;
+  private final CombinedReducer<S> reducer;
+  private final Dispatcher chain;
 
-	public SimpleStore(Class<S> clazz, S state, CombinedReducer<S> reducer,
-			List<Middleware<? super S>> middleware) {
-		super(clazz, state);
-		this.reducer = reducer;
+  public SimpleStore(final Class<S> clazz, final S state, final CombinedReducer<S> reducer,
+      final List<Middleware<? super S>> middleware) {
+    super(clazz, state);
+    this.reducer = reducer;
 
-		this.chain = MiddlewareUtils.createChain(this, state, middleware, this::dispatchToReducers);
-	}
+    this.chain = MiddlewareUtils.createChain(this, state, middleware, this::dispatchToReducers);
+  }
 
-	@Override
-	public void dispatch(Object action) {
-		// Discard nulls
-		if (action == null) {
-			return;
-		}
+  @Override
+  public void dispatch(final Object action) {
+    // Discard nulls
+    if (action == null) {
+      return;
+    }
 
-		this.chain.dispatch(action);
-	}
+    this.chain.dispatch(action);
+  }
 
-	private void dispatchToReducers(Object action) {
-		boolean changed = reducer.dispatch(this, action);
+  private void dispatchToReducers(final Object action) {
+    final boolean changed = reducer.dispatch(this, action);
 
-		if (changed) {
-			fireStateChanged();
-		}
-	}
+    if (changed) {
+      fireStateChanged();
+    }
+  }
 
 }

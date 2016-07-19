@@ -6,26 +6,26 @@ import software.committed.rejux.interfaces.State;
 
 public class StateWrappedReducer<S, T extends State<S>> extends AbstractReducer<T> {
 
-	private final Reducer<S> reducer;
+  private final Reducer<S> reducer;
 
-	public StateWrappedReducer(Class<T> clazz, Reducer<S> reducer) {
-		super(clazz);
-		this.reducer = reducer;
-	}
+  public StateWrappedReducer(final Class<T> clazz, final Reducer<S> reducer) {
+    super(clazz);
+    this.reducer = reducer;
+  }
 
-	@Override
-	public T reduce(T wrapped, Object action) {
+  @Override
+  public T reduce(final T wrapped, final Object action) {
 
-		S oldState = wrapped.get();
-		S newState = reducer.reduce(oldState, action);
+    final S oldState = wrapped.get();
+    final S newState = reducer.reduce(oldState, action);
 
-		if (wrapped instanceof SettableState) {
-			((SettableState<S>) wrapped).setState(newState);
-		} else {
-			// TODO: Or do what?
-		}
+    if (wrapped instanceof SettableState) {
+      ((SettableState<S>) wrapped).setState(newState);
+    } else {
+      // TODO: Or do what?
+    }
 
-		return wrapped;
-	}
+    return wrapped;
+  }
 
 }
