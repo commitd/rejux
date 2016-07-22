@@ -53,7 +53,7 @@ public class AddAction {
 }
 ```
 
-We suggest you use [Lombok)(https://projectlombok.org/), so that last class becomes:
+We suggest you use [Lombok](https://projectlombok.org/), so that last class becomes:
 
 ```
 @Data
