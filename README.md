@@ -1,5 +1,7 @@
 # rejux
 
+[![Build Status](https://travis-ci.org/commitd/rejux.svg?branch=master)](https://travis-ci.org/commitd/rejux)
+
 A remix of [Redux](http://redux.js.org/) for Java.
 
 We really like Redux, and [Flux](https://facebook.github.io/flux/) in general, as it makes your application state very easy to reasonable. All your meaningful appplication state exists in one shared place and that helps decouple components from the data they require.  We aren't going to introduce Redux and Flux here again because they are very well documented on their own sites.
