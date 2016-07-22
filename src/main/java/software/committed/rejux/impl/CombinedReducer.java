@@ -50,8 +50,6 @@ public class CombinedReducer<S> {
                 }
 
                 stateClass = state.getType();
-                //
-                // reducer = new StateWrappedReducer(stateClass, reducer);
               }
 
               if (reducerStateClazz.isAssignableFrom(stateClass)) {
